@@ -127,6 +127,24 @@
     max-width:520px; margin:0 auto; color:var(--muted); font-size:15px; line-height:1.6;
   }
 
+  .btn-pix{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--gold-soft); color:var(--gold); border:1px solid var(--gold);
+    border-radius:999px; padding:10px 18px; font-size:13.5px; font-weight:600; cursor:pointer;
+    margin-top:18px; transition:opacity .15s;
+  }
+  .btn-pix:hover{opacity:.85;}
+  .pix-info{
+    text-align:left; background:var(--surface-2); border-radius:12px; padding:14px 16px;
+    margin:14px 0 18px; font-size:13.5px; line-height:1.7; color:var(--ink);
+  }
+  .pix-info .l{color:var(--muted); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;}
+  .pix-key-box{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--bg); border:1px solid var(--line); border-radius:9px;
+    padding:10px 12px; margin-top:4px; font-variant-numeric:tabular-nums;
+  }
+
   .grid{
     display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:18px;
     margin-block:36px;
@@ -282,7 +300,14 @@
 
   var STATE = {"couple":"Larissy Summer & João Kleber","weddingDate":"03 de outubro de 2026","venue":"Espaco Vila America, Goiania - GO","ceremonyTime":"Cerimonia as 17h","auth":{"user":"joaoelari","pass":"0310"},"gifts":[{"id":"g1","name":"MOP Eletrico Amvox Aspira e Passa Pano","link":"https://shopee.com.br/product/458929927/21897667954?d_id=418ff&uls_trackid=56n8c3lg00l0&utm_content=2gQy8zckeLJiJx8s7zn52Kzw84oH","reserved":false,"guest":null,"reservedAt":null},{"id":"g2","name":"Organizador com Cesto Triplo Ou 5L Linha Clear Fresh","link":"https://www.ou.com.br/collections/organizadores-de-geladeira/products/organizador-com-cesto-triplo-ou-5l-linha-clear-fresh?variant=46344054669533","reserved":false,"guest":null,"reservedAt":null},{"id":"g3","name":"Panela Oval de Ferro Fundido Santana 2,5L","link":"https://shopee.com.br/Panela-de-Ferro-Oval-(-PROMO%C3%87%C3%83O-TOP-ENVIO-J%C3%81-)-FERRO-HOLAND%C3%8AS-pra-Assar-P%C3%A3es-Caseiros-2-5-Litros.-i.448536449.3051727985","reserved":false,"guest":null,"reservedAt":null},{"id":"g4","name":"Porta Frios Duplo Ou Linha Clear Fresh","link":"https://www.ou.com.br/collections/organizadores-de-geladeira/products/porta-frios-duplo-ou-linha-clear-fresh?variant=46344065876189","reserved":false,"guest":null,"reservedAt":null},{"id":"g5","name":"Seladora a Vacuo Electrolux Portatil","link":"https://loja.electrolux.com.br/seladora-vacuo-electrolux-127v/p","reserved":false,"guest":null,"reservedAt":null},{"id":"g6","name":"Faqueiro 30 Pecas em Aco Inox Berna Wolff","link":"https://shopee.com.br/Faqueiro-30-Pe%C3%A7as-em-A%C3%A7o-Inox-Berna-Wolff-i.1270189717.19897687168","reserved":false,"guest":null,"reservedAt":null},{"id":"g7","name":"Kit 3 Assadeiras Redondas de Ferro","link":"https://shopee.com.br/product/1358389842/23198346194","reserved":false,"guest":null,"reservedAt":null},{"id":"g8","name":"Travessa Retangular de Ceramica","link":"https://shopee.com.br/product/256077772/48166460578","reserved":false,"guest":null,"reservedAt":null},{"id":"g9","name":"Frigideira de Ferro Fundido","link":"https://shopee.com.br/product/351451355/23295896265","reserved":false,"guest":null,"reservedAt":null},{"id":"g10","name":"Frigideira Supreme Aco Inox GP","link":"https://shopee.com.br/product/525640678/19199846977","reserved":false,"guest":null,"reservedAt":null},{"id":"g11","name":"Petisqueira de Madeira","link":"https://shopee.com.br/product/906352563/22399130981","reserved":false,"guest":null,"reservedAt":null},{"id":"g12","name":"Organizador de Geladeira Empilhavel","link":"https://www.amazon.com.br/dp/B0BLZR6JFJ","reserved":false,"guest":null,"reservedAt":null},{"id":"g13","name":"Organizador Redondo para Frutas e Petiscos","link":null,"reserved":false,"guest":null,"reservedAt":null},{"id":"g14","name":"Organizador e Cortador de Rolos Duplo Ou Linha Clear","link":"https://www.ou.com.br/collections/organizadores-de-gaveta/products/organizador-e-cortador-de-rolos-duplo-ou-linha-clear?variant=46344033468637","reserved":false,"guest":null,"reservedAt":null}]}; //STATE_END
 
-  var UI = { search:"", modalGiftId:null, adminOpen:false, adminUnlocked:false, loginError:"", busy:false, alertMsg:null };
+  var UI = { search:"", modalGiftId:null, adminOpen:false, adminUnlocked:false, loginError:"", busy:false, alertMsg:null, pixOpen:false };
+
+  var PIX = {
+    cpfFormatted: "049.327.601-75",
+    cpfDigits: "04932760175",
+    bank: "Caixa Economica Federal",
+    name: "Joao Kleber Cabral de Oliveira"
+  };
 
   var FIREBASE_URL = "https://casamento-1159c-default-rtdb.firebaseio.com";
   // In-memory cache of live reservations, keyed by gift id: {guest, reservedAt}.
@@ -342,6 +367,10 @@
 
   function buyIconSmall(){
     return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3h2.4l1.9 11.2a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L20.8 7H6"/></svg>';
+  }
+
+  function pixIconSmall(){
+    return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 3.5 3.5 8.5a3 3 0 0 0 0 4.24l5 5a3 3 0 0 0 4.24 0l5-5a3 3 0 0 0 0-4.24l-5-5a3 3 0 0 0-4.24 0Z"/><path d="M8 12h.01M16 12h.01M10.5 9.5 12 8l1.5 1.5M10.5 14.5 12 16l1.5-1.5"/></svg>';
   }
 
   function searchIcon(){
@@ -423,6 +452,28 @@
       '<div class="table-wrap"><table><thead><tr><th>Presente</th><th>Status</th><th>Reservado por</th><th>Data</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
   }
 
+  function renderPixModal(){
+    return '' +
+      '<div class="modal-overlay" id="pixOverlay">' +
+        '<div class="modal">' +
+          '<h3>Contribuir via Pix</h3>' +
+          '<p class="sub">Se preferir, voce tambem pode contribuir diretamente.</p>' +
+          '<div class="pix-info">' +
+            '<p class="l">Pix (CPF)</p>' +
+            '<div class="pix-key-box"><span id="pixKeyText">'+esc(PIX.cpfFormatted)+'</span></div>' +
+            '<p class="l" style="margin-top:12px;">Banco</p>' +
+            '<p>'+esc(PIX.bank)+'</p>' +
+            '<p class="l" style="margin-top:12px;">Nome</p>' +
+            '<p>'+esc(PIX.name)+'</p>' +
+          '</div>' +
+          '<div class="modal-actions">' +
+            '<button class="btn-outline" data-action="close-pix">Fechar</button>' +
+            '<button class="btn-solid" data-action="copy-pix">Copiar chave Pix</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
   function renderReserveModal(){
     var g = STATE.gifts.filter(function(x){return x.id===UI.modalGiftId;})[0];
     if(!g) return '';
@@ -462,6 +513,7 @@
           '<div class="rule"><span></span><svg width="7" height="7" viewBox="0 0 8 8"><rect x="1" y="1" width="6" height="6" fill="currentColor" opacity=".4" transform="rotate(45 4 4)"/></svg><span></span></div>' +
           '<p class="intro">Escolha um presente abaixo e clique em "Reservar presente". Assim evitamos presentes repetidos e vocês ajudam a gente a comecar essa nova casa com carinho.</p>' +
           '<p class="intro" style="margin-top:8px;">O botão "Comprar presente" leva você a sugestões de sites confiáveis para adquirir cada item.</p>' +
+          '<button class="btn-pix" data-action="open-pix">'+pixIconSmall()+'<span>Contribuir via Pix</span></button>' +
         '</section>' +
         (gifts.length===0 ? '<p class="empty">Nenhum presente encontrado.</p>' : cardsHtml) +
         '<div class="admin-wrap"><div class="admin-card '+(UI.adminOpen?'wide':'')+'">' +
@@ -471,7 +523,8 @@
         '</div></div>' +
       '</main>' +
       '<footer class="foot">Feito com carinho para o nosso grande dia.</footer>' +
-      (UI.modalGiftId ? renderReserveModal() : '');
+      (UI.modalGiftId ? renderReserveModal() : '') +
+      (UI.pixOpen ? renderPixModal() : '');
 
     var app = document.getElementById('app');
     var active = document.activeElement;
@@ -488,6 +541,33 @@
           try{ el.setSelectionRange(focusInfo.start, focusInfo.end); }catch(e){}
         }
       }
+    }
+  }
+
+  function copyPixKey(){
+    var text = PIX.cpfDigits;
+    function fallbackCopy(){
+      try{
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus(); ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        if(ok){ showToast('Chave Pix copiada!'); }
+        else{ showToast('Nao foi possivel copiar automaticamente. Chave Pix: ' + PIX.cpfFormatted); }
+      }catch(e){
+        showToast('Nao foi possivel copiar automaticamente. Chave Pix: ' + PIX.cpfFormatted);
+      }
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        showToast('Chave Pix copiada!');
+      }).catch(fallbackCopy);
+    } else {
+      fallbackCopy();
     }
   }
 
@@ -577,10 +657,19 @@
     if(e.target && e.target.id === 'modalOverlay'){
       UI.modalGiftId = null; render(); return;
     }
+    if(e.target && e.target.id === 'pixOverlay'){
+      UI.pixOpen = false; render(); return;
+    }
     var el = e.target.closest('[data-action]');
     if(!el) return;
     var action = el.dataset.action;
-    if(action === 'open-reserve'){
+    if(action === 'open-pix'){
+      UI.pixOpen = true; render();
+    } else if(action === 'close-pix'){
+      UI.pixOpen = false; render();
+    } else if(action === 'copy-pix'){
+      copyPixKey();
+    } else if(action === 'open-reserve'){
       UI.modalGiftId = el.dataset.id; render();
       setTimeout(function(){ var i = document.getElementById('guestName'); if(i) i.focus(); }, 0);
     } else if(action === 'close-modal'){
